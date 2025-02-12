@@ -33,7 +33,7 @@ This project sets up an **ESP32 as a Wi-Fi access point** that hosts a **web ser
 ## Installation
 1. **Clone the Repository:**
    ```sh
-   git clone https://github.com/Greninja44/esp32-humidity-webserver.git
+   git clone https://github.com/shashi4030/HumidityWebServer.git
    cd esp32-humidity-webserver
    ```
 
