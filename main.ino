@@ -34,7 +34,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 </head>
 <body>
     <h1>Humidity Data Project</h1>
-    <h3>Team Name: Esp01 Humidity Webserver</h3>
+    <h3>Team Name: Esp32 Humidity Webserver</h3>
     <h3>Team Members: Keval, Shashi, Adarsh</h3>
     
     <div class="humidity-container">
