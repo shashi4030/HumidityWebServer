@@ -1,16 +1,24 @@
-#include <WiFi.h>
-#include <WebServer.h>
-#include <DHT.h>
+#include <WiFi.h>        // Library to handle Wi-Fi functionality
+#include <WebServer.h>   // Simple web server library for ESP32
+#include <DHT.h>         // Library for DHT sensor
 
-#define DHTPIN 4        // Pin where the DHT sensor is connected
-#define DHTTYPE DHT11   // Type of DHT sensor (DHT11 or DHT22)
+// Define the pin where the DHT sensor is connected
+#define DHTPIN 4       
 
+// Define the type of DHT sensor (DHT11 or DHT22)
+#define DHTTYPE DHT11   
+
+// Create a DHT object
 DHT dht(DHTPIN, DHTTYPE);
+
+// Create a web server object that listens on port 80
 WebServer server(80);
 
+// Wi-Fi credentials (used for Access Point mode)
 const char* ssid = "ESP32_Humidity_AP";  // Name of the ESP32 Wi-Fi network
 const char* password = "12345678";       // Password for the AP
 
+// HTML page -- done by shahsi
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
@@ -37,48 +45,70 @@ const char index_html[] PROGMEM = R"rawliteral(
     <script>
         async function fetchHumidity() {
             try {
+                // Fetch the humidity data from the ESP32 server
                 const response = await fetch('/humidity');
                 const data = await response.json();
+                
+                // Update the displayed humidity value
                 document.getElementById('humidity-value').innerText = `Humidity: ${data.humidity}%`;
+                
+                // Update the progress bar width based on humidity value
                 document.getElementById('humidity-bar').style.width = `${data.humidity}%`;
             } catch (error) {
                 console.error('Error fetching humidity:', error);
             }
         }
+        
+        // Fetch humidity data every 5 seconds
         setInterval(fetchHumidity, 5000);
     </script>
 </body>
 </html>
 )rawliteral";
 
+// Function to handle the root webpage request
 void handleRoot() {
     server.send(200, "text/html", index_html);
 }
 
+// Function to handle the humidity data request
 void handleHumidity() {
-    float humidity = dht.readHumidity();
+    float humidity = dht.readHumidity();  // Read humidity from the sensor
+
+    // Check if the reading is valid
     if (isnan(humidity)) {
-        server.send(500, "text/plain", "Failed to read from sensor");
+        server.send(500, "text/plain", "Failed to read from sensor");  // Return an error response
         return;
     }
+
+    // Create a JSON response
     String jsonResponse = "{\"humidity\":" + String(humidity) + "}";
+    
+    // Send the JSON response back to the client
     server.send(200, "application/json", jsonResponse);
 }
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(115200);  // Start the serial monitor for debugging
+
+    // Initialize Wi-Fi in Access Point (AP) mode
     WiFi.softAP(ssid, password);
+    
+    // Print the AP details in Serial Monitor
     Serial.println("ESP32 AP Mode Started!");
     Serial.print("IP Address: ");
     Serial.println(WiFi.softAPIP());
-    
-    dht.begin();
-    
-    server.on("/", handleRoot);
-    server.on("/humidity", handleHumidity);
-    server.begin();
+
+    dht.begin();  // Start the DHT sensor
+
+    // Define server routes
+    server.on("/", handleRoot);         // Serve the HTML page
+    server.on("/humidity", handleHumidity);  // Serve humidity data in JSON format
+
+    server.begin();  // Start the server
 }
 
 void loop() {
-    server.handleClient();
+    server.handleClient();  // Handle client requests
 }
+// hardware and software work done by keval and Adarsh
