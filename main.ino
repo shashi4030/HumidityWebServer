@@ -12,7 +12,7 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 // Create a web server object that listens on port 80
-WebServer server(80);
+WebServer server(80);    // default port for http traffic
 
 // Wi-Fi credentials (used for Access Point mode)
 const char* ssid = "ESP32_Humidity_AP";  // Name of the ESP32 Wi-Fi network
