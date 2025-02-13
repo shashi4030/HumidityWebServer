@@ -85,7 +85,7 @@ void handleHumidity() {
     String jsonResponse = "{\"humidity\":" + String(humidity) + "}";
     
     // Send the JSON response back to the client
-    server.send(200, "application/json", jsonResponse);
+    server.send(200, "application/json", jsonResponse);  //jSon beacuse its lightwieght and stable
 }
 
 void setup() {
@@ -97,7 +97,7 @@ void setup() {
     // Print the AP details in Serial Monitor
     Serial.println("ESP32 AP Mode Started!");
     Serial.print("IP Address: ");
-    Serial.println(WiFi.softAPIP());
+    Serial.println(WiFi.softAPIP());   //prints ip address
 
     dht.begin();  // Start the DHT sensor
 
